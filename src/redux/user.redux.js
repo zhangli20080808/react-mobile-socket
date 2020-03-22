@@ -2,7 +2,8 @@ import axios from "axios";
 import { getRedirectPath } from "../util";
 const ERROR_MSG = "ERROR_MSG";
 
-const AUTH_SUCCESS = 'AUTH_SUCCESS'
+const AUTH_SUCCESS = "AUTH_SUCCESS";
+const LOGOUT = "LOGOUT";
 
 const LOAD_DATA = "LOAD_DATA";
 
@@ -23,13 +24,12 @@ export function loadData(userinfo) {
   return { type: LOAD_DATA, payload: userinfo };
 }
 
-function authSuccess(obj){
-	const {pwd,...data} = obj
-	return {type: AUTH_SUCCESS, payload:data}
+function authSuccess(obj) {
+  const { pwd, ...data } = obj;
+  return { type: AUTH_SUCCESS, payload: data };
 }
 // reducers
 export function user(state = initState, action) {
-
   switch (action.type) {
     case AUTH_SUCCESS:
       return {
@@ -39,8 +39,10 @@ export function user(state = initState, action) {
         ...action.payload
       };
     case LOAD_DATA:
-      
       return { ...state, ...action.payload };
+
+    case LOGOUT:
+      return { ...initState, redirectTo: "/login" };
 
     case ERROR_MSG:
       return { ...state, isAtuh: false, msg: action.msg };
@@ -85,7 +87,26 @@ export function login({ user, pwd }) {
 export function update(data) {
   return dispatch => {
     axios.post("/user/update", data).then(res => {
-      dispatch(authSuccess(res.data.data))
+      dispatch(authSuccess(res.data.data));
+    });
+  };
+}
+
+export function logoutSubmit() {
+  return { type: LOGOUT };
+}
+
+export function getUserInfo() {
+  return dispatch => {
+    axios.get("/user/info").then(res => {
+      if (res.status === 200) {
+        if (res.data.code === 0) {
+          //有登录信息
+          dispatch(loadData(res.data.data));
+        } else {
+          dispatch(errorMsg(res.data.msg));
+        }
+      }
     });
   };
 }

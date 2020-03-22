@@ -28,9 +28,6 @@ const store = createStore(
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 );
-function Boss() {
-  return <h1>gsggsggggg</h1>;
-}
 
 // 四个页面 boss genius person msg
 // console.log(store.getState())
