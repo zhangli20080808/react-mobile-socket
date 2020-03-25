@@ -1,95 +1,69 @@
-import React from "react";
-import {
-  List,
-  InputItem,
-  WhiteSpace,
-  Radio,
-  WingBlank,
-  Button
-} from "antd-mobile";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { register } from "../../redux/user.redux";
+import React from 'react'
+import Logo from '../../component/logo/logo'
+import {List, InputItem,Radio, WingBlank, WhiteSpace, Button} from 'antd-mobile'
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
+import {regisger} from '../../redux/user.redux'
+import imoocForm from '../../component/imooc-form/imooc-form'
+@connect(
+	state=>state.user,
+	{regisger}
+)
+@imoocForm
+class Register extends React.Component{
+	constructor(props) {
+		super(props)
+		this.handleRegister = this.handleRegister.bind(this)
+	}
+	componentDidMount(){
+		this.props.handleChange('type','genius')
+	}
+	handleRegister(){
+		this.props.regisger(this.props.state)
+	}
+	render(){
+		const RadioItem = Radio.RadioItem
+		return (
+			<div>
+				{this.props.redirectTo? <Redirect to={this.props.redirectTo} />:null}
+				<Logo></Logo>
+				<List>
+					{this.props.msg?<p className='error-msg'>{this.props.msg}</p>:null}
+					<InputItem
+						onChange={v=>this.props.handleChange('user',v)}
+					>用户名</InputItem>
+					<WhiteSpace />
+					<InputItem
+						type='password'
+						onChange={v=>this.props.handleChange('pwd',v)}
+					>密码</InputItem>
+					<WhiteSpace />
+					<InputItem
+						type='password'
+						onChange={v=>this.props.handleChange('repeatpwd',v)}
+					>确认密码</InputItem>
+					<WhiteSpace />
+					<RadioItem
+						checked={this.props.state.type=='genius'}
+						onChange={()=>this.props.handleChange('type','genius')}
+					>
+						牛人
+					</RadioItem>
+					<RadioItem
+						checked={this.props.state.type=='boss'}
+						onChange={()=>this.props.handleChange('type','boss')}
+					>
+						BOSS
+					</RadioItem>
+					<WhiteSpace />
+					<Button type='primary' onClick={this.handleRegister}>注册 </Button>
+				</List>
 
-// 你要state什么属性放到props里面  你要什么方法，放到props里面，自动dispatch
-@connect(state => state.user, { register })
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleRegister = this.handleRegister.bind(this);
-    this.toLogin = this.toLogin.bind(this);
-    this.state = {
-      type: "genius", //boss,
-      user: "",
-      pwd: "",
-      repeatpwd: ""
-    };
-  }
-  handleChange(key, val) {
-    this.setState({
-      [key]: val
-    });
-  }
-  handleRegister() {
-    this.props.register(this.state);
-  }
 
-  toLogin() {
-    this.props.history.push("/login");
-  }
-  render() {
-    const RadioItem = Radio.RadioItem;
-    return (
-      <div>
-        <p>注册页</p>
-        <p className="error-msg">{this.props.msg ? this.props.msg : ""}</p>
-        {this.props.redirectTo ? <Redirect to={this.props.redirectTo} /> : null}
-        <WingBlank>
-          <List>
-            <InputItem onChange={v => this.handleChange("user", v)}>
-              用户名
-            </InputItem>
-            <WhiteSpace />
-            <InputItem
-              onChange={v => this.handleChange("pwd", v)}
-              type="password"
-            >
-              密码
-            </InputItem>
-            <WhiteSpace />
-            <InputItem
-              onChange={v => this.handleChange("repeatpwd", v)}
-              type="password"
-            >
-              确认密码
-            </InputItem>
-            <WhiteSpace />
-            <RadioItem
-              checked={this.state.type === "genius"}
-              onChange={v => this.handleChange("type", "genius")}
-            >
-              牛人
-            </RadioItem>
-            <RadioItem
-              checked={this.state.type === "boss"}
-              onChange={v => this.handleChange("type", "boss")}
-            >
-              BOSS
-            </RadioItem>
-            <Button type="primary" onClick={this.handleRegister}>
-              注册
-            </Button>
-            <Button
-              type="primary"
-              style={{ marginTop: 10 }}
-              onClick={this.toLogin}
-            >
-              登录
-            </Button>
-          </List>
-        </WingBlank>
-      </div>
-    );
-  }
+			</div>
+
+		)
+	}
 }
-export default Login;
+
+export default Register

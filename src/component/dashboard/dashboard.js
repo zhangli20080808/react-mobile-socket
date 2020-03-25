@@ -54,7 +54,7 @@ class Dashboard extends React.Component {
         {user && (
           <div>
             <NavBar className="fixd-header" mode="dard">
-              {navList.find(v => v.path == pathname).title}
+              {/* {navList && navList.find(v => v.path == pathname).title} */}
             </NavBar>
             <div style={{ marginTop: 45 }}>
               <Switch>
